@@ -4,31 +4,18 @@ namespace Player.States
 {
     public class Idle : StateMachineBehaviour
     {
-        private PlayerController _player = PlayerController.Instance;
-        public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo,
-            int layerIndex)
+        public PlayerController player;
+        public Rigidbody2D rigidbody;
+
+        private void Awake()
         {
-            
+            player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+            rigidbody = GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody2D>();
         }
 
-        public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo,
-            int layerIndex)
+        public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-        }
-
-        public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo,
-            int layerIndex)
-        {
-        }
-
-        public override void OnStateMove(Animator animator, AnimatorStateInfo stateInfo,
-            int layerIndex)
-        {
-        }
-
-        public override void OnStateIK(Animator animator, AnimatorStateInfo stateInfo,
-            int layerIndex)
-        {
+            rigidbody.velocity = Vector2.zero;
         }
     }
 }

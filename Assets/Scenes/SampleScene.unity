@@ -3070,7 +3070,7 @@ GameObject:
   - component: {fileID: 1069792817}
   m_Layer: 8
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3141,12 +3141,14 @@ MonoBehaviour:
   speed: 8
   jumpForce: 30
   smoothTime: 0.02
-  velocity: 0
+  rawInput: {x: 0, y: 0}
+  smoothInput: {x: 0, y: 0}
   deadZone: 0.001
   groundDistance: 1.007813
   groundMask:
     serializedVersion: 2
     m_Bits: 512
+  rigidbody: {fileID: 0}
 --- !u!4 &1069792820
 Transform:
   m_ObjectHideFlags: 0
