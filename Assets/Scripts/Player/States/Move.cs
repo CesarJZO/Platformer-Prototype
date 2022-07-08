@@ -1,11 +1,10 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Player.States
 {
     public class Move : StateMachineBehaviour
     {
-        private static readonly int XInputID = Animator.StringToHash("XInput");
+        private static readonly int XInputID = Animator.StringToHash("Abs XInput");
         private PlayerController _player;
         private Rigidbody2D _rigidbody;
 

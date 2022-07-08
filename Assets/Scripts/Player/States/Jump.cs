@@ -23,6 +23,7 @@ namespace Player.States
         {
             var velocity = _rigidbody.velocity;
             var newVelocity = new Vector2(_player.previousSpeed + _player.smoothInput.x * _player.speed * airControl, velocity.y);
+            newVelocity.x = Mathf.Clamp(newVelocity.x, -_player.maxSpeed, _player.maxSpeed);
             _rigidbody.velocity = newVelocity;
         }
     }

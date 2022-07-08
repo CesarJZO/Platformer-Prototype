@@ -4,18 +4,19 @@ namespace Player.States
 {
     public class Idle : StateMachineBehaviour
     {
-        public PlayerController player;
-        public Rigidbody2D rigidbody;
+        private PlayerController _player;
+        private Rigidbody2D _rigidbody;
 
         private void Awake()
         {
-            player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-            rigidbody = GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody2D>();
+            _player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+            _rigidbody = GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody2D>();
         }
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            rigidbody.velocity = Vector2.zero;
+            _player.previousSpeed = 0;
+            _rigidbody.velocity = Vector2.zero;
         }
     }
 }

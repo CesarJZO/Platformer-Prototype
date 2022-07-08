@@ -8,6 +8,7 @@ namespace Player
     {
         [Header("Settings")]
         public float speed;
+        public float maxSpeed;
         public float jumpForce;
 
         [Header("Input")]
@@ -26,13 +27,15 @@ namespace Player
         
         #endregion
         
-        #region Animator
+        #region Sprites
 
+        private Quaternion _currentRotation;
         private Animator _animator;
-        private static readonly int MoveID = Animator.StringToHash("XInput");
+        private static readonly int MoveID = Animator.StringToHash("Abs XInput");
         private static readonly int JumpID = Animator.StringToHash("Jump");
         private static readonly int GroundedID = Animator.StringToHash("Grounded");
         private static readonly int YVelocityID = Animator.StringToHash("Vertical Velocity");
+        private static readonly int XVelocityID = Animator.StringToHash("Abs Horizontal Velocity");
 
         #endregion
         
@@ -66,6 +69,9 @@ namespace Player
             if (smoothInput.magnitude <= deadZone)
                 smoothInput = Vector2.zero;
             
+            if (Mathf.Abs(rigidbody.velocity.x) > deadZone)
+                _currentRotation.y = rigidbody.velocity.x > 0 ? 0 : 180;
+            
             // Jump pressed and grounded?
             if (!_jumpAction.WasPressedThisFrame() || !Grounded) return;
             
@@ -79,8 +85,10 @@ namespace Player
         private void LateUpdate()
         {
             _animator.SetFloat(MoveID, Mathf.Abs(smoothInput.x));
+            _animator.SetFloat(XVelocityID, Mathf.Abs(rigidbody.velocity.x));
             _animator.SetFloat(YVelocityID, rigidbody.velocity.y);
             _animator.SetBool(GroundedID, Grounded);
+            transform.rotation = _currentRotation;
         }
 
         private void OnDrawGizmosSelected()

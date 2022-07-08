@@ -3138,13 +3138,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da756f431d92453fae62c22d726cf6d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 8
+  speed: 12
+  maxSpeed: 12
   jumpForce: 30
   smoothTime: 0.02
   rawInput: {x: 0, y: 0}
   smoothInput: {x: 0, y: 0}
   deadZone: 0.001
-  groundDistance: 1.007813
+  previousSpeed: 0
+  groundDistance: 1.0625
   groundMask:
     serializedVersion: 2
     m_Bits: 512
