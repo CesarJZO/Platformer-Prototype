@@ -22,6 +22,7 @@ namespace Player.States
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             _rigidbody.velocity = new Vector2(_player.smoothInput.x * _player.speed, _rigidbody.velocity.y);
+            
             var absXInput = animator.GetFloat(XInputID);
             if (absXInput > 0)
                 animator.speed = absXInput;

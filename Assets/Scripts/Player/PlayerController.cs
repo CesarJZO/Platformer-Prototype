@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Player
@@ -69,7 +70,9 @@ namespace Player
             if (smoothInput.magnitude <= deadZone)
                 smoothInput = Vector2.zero;
             
-            if (Mathf.Abs(rigidbody.velocity.x) > deadZone)
+            var facingLeft = Math.Abs(_currentRotation.y - 180) < 0f;
+            // if (rawInput.x > 0 && facingLeft || rawInput.x < 0 && !facingLeft)
+            if (rawInput.x > 0 && (int)_currentRotation.y == 180 || rawInput.x < 0 && (int)_currentRotation.y != 180)
                 _currentRotation.y = rigidbody.velocity.x > 0 ? 0 : 180;
             
             // Jump pressed and grounded?
