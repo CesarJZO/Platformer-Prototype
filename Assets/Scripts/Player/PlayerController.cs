@@ -1,4 +1,5 @@
 ﻿using System;
+using StatePattern;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,10 +8,17 @@ namespace Player
     [RequireComponent(typeof(Rigidbody2D), typeof(PlayerInput))]
     public class PlayerController : MonoBehaviour
     {
-        [Header("Settings")]
-        public float speed;
-        public float maxSpeed;
-        public float jumpForce;
+        [Serializable]
+        public class Settings
+        {
+            public float speed;
+            public float maxSpeed;
+            public float jumpForce;
+            [Range(0f, 1f)] public float jumpAirControl;
+            [Range(0f, 1f)] public float fallAirControl;
+        }
+
+        public Settings settings;
 
         [Header("Input")]
         [SerializeField] private float smoothTime;
@@ -31,7 +39,7 @@ namespace Player
         #region Sprites
 
         private Quaternion _currentRotation;
-        private Animator _animator;
+        public Animator animator;
         private static readonly int MoveID = Animator.StringToHash("Abs XInput");
         private static readonly int JumpID = Animator.StringToHash("Jump");
         private static readonly int GroundedID = Animator.StringToHash("Grounded");
@@ -49,11 +57,22 @@ namespace Player
 
         #endregion
 
+        #region StateMachine
+
+        private StateMachine _stateMachine;
+        public IdleState idleState;
+        public WalkState walkState;
+        public JumpState jumpState;
+        public FallState fallState;
+        public void ChangeState(PlayerState state) => _stateMachine.ChangeState(state);
+
+        #endregion
+        
         #region MonoBehaviour Methods
 
         private void Awake()
         {
-            _animator = GetComponentInChildren<Animator>();
+            animator = GetComponentInChildren<Animator>();
             rigidbody = GetComponent<Rigidbody2D>();
             _playerInput = GetComponent<PlayerInput>();
             _moveAction = _playerInput.actions["Move"];
@@ -70,7 +89,7 @@ namespace Player
             if (smoothInput.magnitude <= deadZone)
                 smoothInput = Vector2.zero;
             
-            var facingLeft = Math.Abs(_currentRotation.y - 180) < 0f;
+            // var facingLeft = Math.Abs(_currentRotation.y - 180) < 0f;
             // if (rawInput.x > 0 && facingLeft || rawInput.x < 0 && !facingLeft)
             if (rawInput.x > 0 && (int)_currentRotation.y == 180 || rawInput.x < 0 && (int)_currentRotation.y != 180)
                 _currentRotation.y = rigidbody.velocity.x > 0 ? 0 : 180;
@@ -78,19 +97,19 @@ namespace Player
             // Jump pressed and grounded?
             if (!_jumpAction.WasPressedThisFrame() || !Grounded) return;
             
-            var stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+            var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
             if (stateInfo.IsName("Jump") || stateInfo.IsName("Fall")) return;
             
             previousSpeed = rigidbody.velocity.x;
-            _animator.SetTrigger(JumpID);
+            animator.SetTrigger(JumpID);
         }
 
         private void LateUpdate()
         {
-            _animator.SetFloat(MoveID, Mathf.Abs(smoothInput.x));
-            _animator.SetFloat(XVelocityID, Mathf.Abs(rigidbody.velocity.x));
-            _animator.SetFloat(YVelocityID, rigidbody.velocity.y);
-            _animator.SetBool(GroundedID, Grounded);
+            animator.SetFloat(MoveID, Mathf.Abs(smoothInput.x));
+            animator.SetFloat(XVelocityID, Mathf.Abs(rigidbody.velocity.x));
+            animator.SetFloat(YVelocityID, rigidbody.velocity.y);
+            animator.SetBool(GroundedID, Grounded);
             transform.rotation = _currentRotation;
         }
 
