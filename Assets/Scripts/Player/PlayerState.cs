@@ -1,11 +1,14 @@
 ﻿using StatePattern;
+using UnityEngine.InputSystem;
 
 namespace Player
 {
     public class PlayerState : State
     {
-        protected PlayerController player;
+        protected readonly PlayerController player;
 
-        public PlayerState(PlayerController player) => this.player = player;
+        protected PlayerState(PlayerController player) => this.player = player;
+
+        public virtual void ReadInput(InputAction.CallbackContext context, InputCommand command) { }
     }
 }

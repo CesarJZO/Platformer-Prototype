@@ -4,9 +4,9 @@
     {
         public State CurrentState { get; private set; }
 
-        public StateMachine(State state)
+        public StateMachine(State initialState)
         {
-            CurrentState = state;
+            CurrentState = initialState;
             CurrentState.Start();
         }
 

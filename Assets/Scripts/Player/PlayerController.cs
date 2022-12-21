@@ -1,11 +1,10 @@
 ﻿using System;
 using StatePattern;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Player
 {
-    [RequireComponent(typeof(Rigidbody2D), typeof(PlayerInput))]
+    [RequireComponent(typeof(Rigidbody2D))]
     public class PlayerController : MonoBehaviour
     {
         [Serializable]
@@ -20,97 +19,84 @@ namespace Player
 
         public Settings settings;
 
-        [Header("Input")]
-        [SerializeField] private float smoothTime;
-        [HideInInspector] public Vector2 rawInput;
-        [HideInInspector] public Vector2 smoothInput;
-        [SerializeField] private float deadZone;
+        [Header("Debug")]
+        [SerializeField] private bool showStats;
+        [SerializeField] private int fontSize;
+        [SerializeField] private Vector2 textPosition;
         
-        #region Physics
-
         [Header("Physics")]
         [HideInInspector] public float previousSpeed;
         [SerializeField] private float groundDistance;
         [SerializeField] private LayerMask groundMask;
-        private RaycastHit2D Grounded => Physics2D.Raycast(transform.position, Vector2.down, groundDistance, groundMask);
-        
-        #endregion
-        
-        #region Sprites
+        public RaycastHit2D Grounded => Physics2D.Raycast(transform.position, Vector2.down, groundDistance, groundMask);
 
-        private Quaternion _currentRotation;
-        public Animator animator;
-        private static readonly int MoveID = Animator.StringToHash("Abs XInput");
-        private static readonly int JumpID = Animator.StringToHash("Jump");
-        private static readonly int GroundedID = Animator.StringToHash("Grounded");
-        private static readonly int YVelocityID = Animator.StringToHash("Vertical Velocity");
-        private static readonly int XVelocityID = Animator.StringToHash("Abs Horizontal Velocity");
-
-        #endregion
-        
-        #region Components
-
+        [Header("Dependencies")]
         public new Rigidbody2D rigidbody;
-        private PlayerInput _playerInput;
-        private InputAction _moveAction;
-        private InputAction _jumpAction;
+        public Animator animator;
+        public PlayerInputController input;
+        
+        private Quaternion _currentRotation;
 
-        #endregion
 
-        #region StateMachine
+        #region State Machine
 
         private StateMachine _stateMachine;
         public IdleState idleState;
         public WalkState walkState;
         public JumpState jumpState;
         public FallState fallState;
+        public PlayerState CurrentState => _stateMachine.CurrentState as PlayerState;
         public void ChangeState(PlayerState state) => _stateMachine.ChangeState(state);
 
         #endregion
         
-        #region MonoBehaviour Methods
+        #region Unity API
+
+        public void CrossFade(int stateHashName) => animator.CrossFade(stateHashName, 0f, 0);
 
         private void Awake()
         {
             animator = GetComponentInChildren<Animator>();
             rigidbody = GetComponent<Rigidbody2D>();
-            _playerInput = GetComponent<PlayerInput>();
-            _moveAction = _playerInput.actions["Move"];
-            _jumpAction = _playerInput.actions["Jump"];
+
+            idleState = new IdleState(this);
+            walkState = new WalkState(this);
+            jumpState = new JumpState(this);
+            fallState = new FallState(this);
+
+            _stateMachine = new StateMachine(idleState);
         }
 
         private void Update()
         {
-            var currentVelocity = Vector2.zero;
-            
-            rawInput = _moveAction.ReadValue<Vector2>();
-            smoothInput = Vector2.SmoothDamp(smoothInput, rawInput, ref currentVelocity, smoothTime);
-            
-            if (smoothInput.magnitude <= deadZone)
-                smoothInput = Vector2.zero;
-            
-            // var facingLeft = Math.Abs(_currentRotation.y - 180) < 0f;
-            // if (rawInput.x > 0 && facingLeft || rawInput.x < 0 && !facingLeft)
-            if (rawInput.x > 0 && (int)_currentRotation.y == 180 || rawInput.x < 0 && (int)_currentRotation.y != 180)
-                _currentRotation.y = rigidbody.velocity.x > 0 ? 0 : 180;
-            
-            // Jump pressed and grounded?
-            if (!_jumpAction.WasPressedThisFrame() || !Grounded) return;
-            
-            var stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            if (stateInfo.IsName("Jump") || stateInfo.IsName("Fall")) return;
-            
-            previousSpeed = rigidbody.velocity.x;
-            animator.SetTrigger(JumpID);
+            CurrentState.Update();
+            if (input.RawAxis > 0 && (int)_currentRotation.y == 180 || input.RawAxis < 0 && (int)_currentRotation.y != 180)
+                _currentRotation.y = rigidbody.velocity.x > 0f ? 0f : 180f;
+        }
+
+        private void FixedUpdate()
+        {
+            CurrentState.FixedUpdate();
         }
 
         private void LateUpdate()
         {
-            animator.SetFloat(MoveID, Mathf.Abs(smoothInput.x));
-            animator.SetFloat(XVelocityID, Mathf.Abs(rigidbody.velocity.x));
-            animator.SetFloat(YVelocityID, rigidbody.velocity.y);
-            animator.SetBool(GroundedID, Grounded);
+            CurrentState.LateUpdate();
             transform.rotation = _currentRotation;
+        }
+
+        private void OnGUI()
+        {
+            if (!showStats) return;
+            GUI.Label(
+                new Rect(textPosition, Vector2.one),
+                $"Current: {CurrentState}",
+                new GUIStyle
+                {
+                    fontSize = fontSize,
+                    normal = { textColor = Color.white}
+                }
+            );
         }
 
         private void OnDrawGizmosSelected()
