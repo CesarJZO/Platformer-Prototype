@@ -1,4 +1,5 @@
 ﻿using System;
+using Settings;
 using StatePattern;
 using UnityEngine;
 
@@ -33,6 +34,7 @@ namespace Player
         [Header("Dependencies")]
         public new Rigidbody2D rigidbody;
         public Animator animator;
+        public Animations animations;
         public PlayerInputController input;
         
         private Quaternion _currentRotation;
