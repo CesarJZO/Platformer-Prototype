@@ -5208,6 +5208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 348adeb356ce42ee906c26c74c5805c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cleanInputTime: 0.2
   deadZone: 0.01
   smoothTime: 0.02
 --- !u!1 &1243026124

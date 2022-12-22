@@ -1,4 +1,5 @@
-﻿using Input;
+﻿using System.Collections;
+using Input;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,6 +7,7 @@ namespace Player
 {
     public class PlayerInput : MonoBehaviour
     {
+        [SerializeField] private float cleanInputTime;
         public float deadZone;
         [SerializeField] private float smoothTime;
         public float RawAxis { get; private set; }
@@ -13,6 +15,17 @@ namespace Player
 
         private Player _player;
         private PlayerInputActions _actions;
+
+        private InputCommand _lastInputCommand;
+        public InputCommand LastInputCommand
+        {
+            get => _lastInputCommand;
+            private set
+            {
+                _lastInputCommand = value;
+                StartCoroutine(CleanLastInput());
+            }
+        }
 
         private float _velocity;
 
@@ -36,8 +49,17 @@ namespace Player
             if (Mathf.Abs(SmoothAxis) <= deadZone) SmoothAxis = 0f;
         }
 
+        private IEnumerator CleanLastInput()
+        {
+            yield return new WaitForSeconds(cleanInputTime);
+            _lastInputCommand = InputCommand.None;
+        }
+
+        public void CleanLastInputCommand() => _lastInputCommand = InputCommand.None;
+
         private void OnAttackPerformed(InputAction.CallbackContext obj)
         {
+            LastInputCommand = InputCommand.Attack;
             _player.CurrentState.ReadInput(obj, InputCommand.Attack);
         }
 
@@ -45,6 +67,7 @@ namespace Player
         {
             if (!_player.Grounded) return;
             _player.previousSpeed = _player.rigidbody.velocity.x;
+            LastInputCommand = InputCommand.Jump;
             _player.CurrentState.ReadInput(obj, InputCommand.Jump);
         }
 
@@ -58,6 +81,7 @@ namespace Player
 
     public enum InputCommand
     {
+        None,
         Attack,
         Jump
     }
