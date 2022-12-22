@@ -50,6 +50,7 @@ namespace Player
         public FallState fallState;
         public AttackState attackState;
         public PlayerState CurrentState => _stateMachine.CurrentState as PlayerState;
+        public PlayerState LastState => _stateMachine.LastState as PlayerState;
         public void ChangeState(PlayerState state) => _stateMachine.ChangeState(state);
 
         #endregion
@@ -67,7 +68,7 @@ namespace Player
             runState = new RunState(this, "Run");
             jumpState = new JumpState(this, "Jump");
             fallState = new FallState(this, "Fall");
-            attackState = new AttackState(this, "Attack");
+            attackState = new AttackState(this);
 
             _stateMachine = new StateMachine(idleState);
         }

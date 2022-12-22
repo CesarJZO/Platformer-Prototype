@@ -1,5 +1,4 @@
 ﻿using StatePattern;
-using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Player
