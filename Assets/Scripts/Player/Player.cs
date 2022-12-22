@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Player
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class PlayerController : MonoBehaviour
+    public class Player : MonoBehaviour
     {
         [Serializable]
         public class Settings
@@ -16,6 +16,7 @@ namespace Player
             public float jumpForce;
             [Range(0f, 1f)] public float jumpAirControl;
             [Range(0f, 1f)] public float fallAirControl;
+            public float attackDrag;
         }
 
         public Settings settings;
@@ -24,7 +25,7 @@ namespace Player
         [SerializeField] private bool showStats;
         [SerializeField] private int fontSize;
         [SerializeField] private Vector2 textPosition;
-        
+
         [Header("Physics")]
         [HideInInspector] public float previousSpeed;
         [SerializeField] private float groundDistance;
@@ -35,8 +36,8 @@ namespace Player
         public new Rigidbody2D rigidbody;
         public Animator animator;
         public Animations animations;
-        public PlayerInputController input;
-        
+        public PlayerInput input;
+
         private Quaternion _currentRotation;
 
 
@@ -44,14 +45,15 @@ namespace Player
 
         private StateMachine _stateMachine;
         public IdleState idleState;
-        public WalkState walkState;
+        public RunState runState;
         public JumpState jumpState;
         public FallState fallState;
+        public AttackState attackState;
         public PlayerState CurrentState => _stateMachine.CurrentState as PlayerState;
         public void ChangeState(PlayerState state) => _stateMachine.ChangeState(state);
 
         #endregion
-        
+
         #region Unity API
 
         public void CrossFade(int stateHashName) => animator.CrossFade(stateHashName, 0f, 0);
@@ -61,10 +63,11 @@ namespace Player
             animator = GetComponentInChildren<Animator>();
             rigidbody = GetComponent<Rigidbody2D>();
 
-            idleState = new IdleState(this);
-            walkState = new WalkState(this);
-            jumpState = new JumpState(this);
-            fallState = new FallState(this);
+            idleState = new IdleState(this, "Idle");
+            runState = new RunState(this, "Run");
+            jumpState = new JumpState(this, "Jump");
+            fallState = new FallState(this, "Fall");
+            attackState = new AttackState(this, "Attack");
 
             _stateMachine = new StateMachine(idleState);
         }
@@ -92,7 +95,8 @@ namespace Player
             if (!showStats) return;
             GUI.Label(
                 new Rect(textPosition, Vector2.one),
-                $"Current: {CurrentState}",
+                @$"Stats
+Current: {CurrentState}",
                 new GUIStyle
                 {
                     fontSize = fontSize,

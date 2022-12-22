@@ -4,27 +4,34 @@ using UnityEngine.InputSystem;
 
 namespace Player
 {
-    public class PlayerInputController : MonoBehaviour
+    public class PlayerInput : MonoBehaviour
     {
         public float deadZone;
         [SerializeField] private float smoothTime;
         public float RawAxis { get; private set; }
         public float SmoothAxis { get; private set; }
-        
-        private PlayerController _player;
-        private KnightActions _actions;
+
+        private Player _player;
+        private PlayerInputActions _actions;
 
         private float _velocity;
 
         private void Awake()
         {
-            _player = GetComponentInParent<PlayerController>();
-            _actions = new KnightActions();
+            _player = GetComponentInParent<Player>();
+            _actions = new PlayerInputActions();
+        }
+
+        private void OnEnable()
+        {
+            _actions.Enable();
+            _actions.Ground.Attack.performed += OnAttackPerformed;
+            _actions.Ground.Jump.performed += OnJumpPerformed;
         }
 
         private void Update()
         {
-            RawAxis = _actions.Player.Move.ReadValue<float>();
+            RawAxis = _actions.Ground.Move.ReadValue<float>();
             SmoothAxis = Mathf.SmoothDamp(SmoothAxis, RawAxis, ref _velocity, smoothTime);
             if (Mathf.Abs(SmoothAxis) <= deadZone) SmoothAxis = 0f;
         }
@@ -41,18 +48,11 @@ namespace Player
             _player.CurrentState.ReadInput(obj, InputCommand.Jump);
         }
 
-        private void OnEnable()
-        {
-            _actions.Enable();
-            _actions.Player.Attack.performed += OnAttackPerformed;
-            _actions.Player.Jump.performed += OnJumpPerformed;
-        }
-
         private void OnDisable()
         {
             _actions.Disable();
-            _actions.Player.Attack.performed -= OnAttackPerformed;
-            _actions.Player.Jump.performed -= OnJumpPerformed;
+            _actions.Ground.Attack.performed -= OnAttackPerformed;
+            _actions.Ground.Jump.performed -= OnJumpPerformed;
         }
     }
 

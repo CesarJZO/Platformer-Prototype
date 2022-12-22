@@ -5,28 +5,34 @@ namespace Player
 {
     public class IdleState : PlayerState
     {
-        public IdleState(PlayerController player) : base(player)
+        public IdleState(Player player) : base(player) { }
+
+        public IdleState(Player player, string animationName) : base(player, animationName)
         {
-            animationHashName = Animator.StringToHash("Idle");
+            animationHashName = Animator.StringToHash(animationName);
         }
 
         public override void Start()
         {
+            base.Start();
             player.previousSpeed = 0f;
             player.rigidbody.velocity = Vector2.zero;
-            player.CrossFade(animationHashName);
         }
 
         public override void Update()
         {
             if (Mathf.Abs(player.input.SmoothAxis) > player.input.deadZone)
-                player.ChangeState(player.walkState);
+                player.ChangeState(player.runState);
         }
 
         public override void ReadInput(InputAction.CallbackContext context, InputCommand command)
         {
-            if (command == InputCommand.Jump)
-                player.ChangeState(player.jumpState);
+            player.ChangeState(command switch
+            {
+                InputCommand.Attack => player.attackState,
+                InputCommand.Jump => player.jumpState,
+                _ => null
+            });
         }
 
         public override string ToString() => nameof(IdleState);

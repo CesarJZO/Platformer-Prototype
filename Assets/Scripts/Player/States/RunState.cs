@@ -3,16 +3,13 @@ using UnityEngine.InputSystem;
 
 namespace Player
 {
-    public class WalkState : PlayerState
+    public class RunState : PlayerState
     {
-        public WalkState(PlayerController player) : base(player)
-        {
-            animationHashName = Animator.StringToHash("Move");
-        }
+        public RunState(Player player) : base(player) { }
 
-        public override void Start()
+        public RunState(Player player, string animationName) : base(player, animationName)
         {
-            player.CrossFade(animationHashName);
+            animationHashName = Animator.StringToHash(animationName);
         }
 
         public override void Update()
@@ -37,15 +34,19 @@ namespace Player
 
         public override void ReadInput(InputAction.CallbackContext context, InputCommand command)
         {
-            if (command == InputCommand.Jump)
-                player.ChangeState(player.jumpState);
+            player.ChangeState(command switch
+            {
+                InputCommand.Attack => player.attackState,
+                InputCommand.Jump => player.jumpState,
+                _ => null
+            });
         }
-        
+
         public override void Exit()
         {
             player.animator.speed = 1f;
         }
-        
-        public override string ToString() => nameof(WalkState);
+
+        public override string ToString() => nameof(RunState);
     }
 }

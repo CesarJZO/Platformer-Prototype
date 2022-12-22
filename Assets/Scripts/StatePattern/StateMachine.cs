@@ -12,6 +12,7 @@
 
         public void ChangeState(State state)
         {
+            if (state == null) return;
             CurrentState.Exit();
             CurrentState = state;
             CurrentState.Start();

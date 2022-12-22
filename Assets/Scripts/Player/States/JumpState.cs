@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Player
 {
     public class JumpState : PlayerState
     {
-        public JumpState(PlayerController player) : base(player)
+        public JumpState(Player player) : base(player) { }
+
+        public JumpState(Player player, string animationName) : base(player, animationName)
         {
-            animationHashName = Animator.StringToHash("Jump");
+            animationHashName = Animator.StringToHash(animationName);
         }
 
         public override void Start()
         {
+            base.Start();
             player.rigidbody.AddForce(Vector2.up * player.settings.jumpForce, ForceMode2D.Impulse);
-            player.CrossFade(animationHashName);
         }
 
         public override void FixedUpdate()
@@ -24,11 +27,17 @@ namespace Player
             );
             newVelocity.x = Mathf.Clamp(newVelocity.x, -player.settings.maxSpeed, player.settings.maxSpeed);
             player.rigidbody.velocity = newVelocity;
-            
+
             if (verticalVelocity < 0f)
                 player.ChangeState(player.fallState);
         }
-        
+
+        public override void ReadInput(InputAction.CallbackContext context, InputCommand command)
+        {
+            if (command == InputCommand.Attack)
+                player.ChangeState(player.attackState);
+        }
+
         public override string ToString() => nameof(JumpState);
     }
 }

@@ -2,7 +2,7 @@
     "name": "KnightActions",
     "maps": [
         {
-            "name": "Player",
+            "name": "Ground",
             "id": "c68c307b-94af-444c-ab10-0ae4b3d9371e",
             "actions": [
                 {

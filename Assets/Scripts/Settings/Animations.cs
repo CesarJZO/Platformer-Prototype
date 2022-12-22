@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Settings
@@ -12,19 +13,20 @@ namespace Settings
 
         private void OnValidate()
         {
-            _clipsDictionary.Clear();
-            foreach (var clip in clips) 
-                _clipsDictionary.Add(clip.name, clip);
+            try
+            {
+                _clipsDictionary.Clear();
+                foreach (var clip in clips)
+                    _clipsDictionary.Add(clip.name, clip);
+            }
+            catch (UnassignedReferenceException) { }
         }
-        
+
         public float GetLength(string animationName)
         {
             if (_clipsDictionary.ContainsKey(animationName))
                 return _clipsDictionary[animationName].length;
-            
-            Debug.LogWarning($"{animationName} animation not found");
             return -1;
-
         }
     }
 }

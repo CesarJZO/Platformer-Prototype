@@ -4984,6 +4984,7 @@ MonoBehaviour:
     jumpForce: 35
     jumpAirControl: 0.4
     fallAirControl: 0.6
+    attackDrag: 3
   showStats: 1
   fontSize: 12
   textPosition: {x: 16, y: 16}
@@ -4994,6 +4995,7 @@ MonoBehaviour:
     m_Bits: 512
   rigidbody: {fileID: 1069792818}
   animator: {fileID: 1754451272}
+  animations: {fileID: 11400000, guid: a7f5c77261278ce4c86d5b444c3f9322, type: 2}
   input: {fileID: 1102648761}
 --- !u!4 &1069792820
 Transform:
