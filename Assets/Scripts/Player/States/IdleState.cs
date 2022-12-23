@@ -16,21 +16,21 @@ namespace Player
         {
             base.Start();
             player.previousSpeed = 0f;
-            player.rigidbody.velocity = Vector2.zero;
+            player.Rigidbody.velocity = Vector2.zero;
         }
 
         public override void Update()
         {
-            if (Mathf.Abs(player.input.SmoothAxis) > player.input.deadZone)
-                player.ChangeState(player.runState);
+            if (Mathf.Abs(player.Input.SmoothAxis) > player.Input.deadZone)
+                player.ChangeState(player.RunState);
         }
 
         public override void ReadInput(InputAction.CallbackContext context, InputCommand command)
         {
             player.ChangeState(command switch
             {
-                InputCommand.Attack => player.attackState,
-                InputCommand.Jump => player.jumpState,
+                InputCommand.Attack => player.AttackState,
+                InputCommand.Jump => player.JumpState,
                 _ => null
             });
         }

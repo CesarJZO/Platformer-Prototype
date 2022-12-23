@@ -15,7 +15,6 @@ namespace Player
 
         private Player _player;
         private PlayerInputActions _actions;
-
         private InputCommand _lastInputCommand;
         public InputCommand LastInputCommand
         {
@@ -37,7 +36,7 @@ namespace Player
 
         private void OnEnable()
         {
-            _actions.Enable();
+            _actions.Ground.Enable();
             _actions.Ground.Attack.performed += OnAttackPerformed;
             _actions.Ground.Jump.performed += OnJumpPerformed;
         }
@@ -66,14 +65,14 @@ namespace Player
         private void OnJumpPerformed(InputAction.CallbackContext obj)
         {
             if (!_player.Grounded) return;
-            _player.previousSpeed = _player.rigidbody.velocity.x;
+            _player.previousSpeed = _player.Rigidbody.velocity.x;
             LastInputCommand = InputCommand.Jump;
             _player.CurrentState.ReadInput(obj, InputCommand.Jump);
         }
 
         private void OnDisable()
         {
-            _actions.Disable();
+            _actions.Ground.Disable();
             _actions.Ground.Attack.performed -= OnAttackPerformed;
             _actions.Ground.Jump.performed -= OnJumpPerformed;
         }

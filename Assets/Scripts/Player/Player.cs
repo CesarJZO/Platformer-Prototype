@@ -11,12 +11,12 @@ namespace Player
         [Serializable]
         public class Settings
         {
-            public float speed;
-            public float maxSpeed;
-            public float jumpForce;
-            [Range(0f, 1f)] public float jumpAirControl;
-            [Range(0f, 1f)] public float fallAirControl;
-            public float attackDrag;
+            [field:SerializeField] public float Speed { get; private set; }
+            [field:SerializeField] public float MaxSpeed { get; private set; }
+            [field:SerializeField] public float JumpForce { get; private set; }
+            [field:SerializeField, Range(0f, 1f)] public float JumpAirControl { get; private set; }
+            [field:SerializeField, Range(0f, 1f)] public float FallAirControl { get; private set; }
+            [field:SerializeField] public float AttackDrag { get; private set; }
         }
 
         public Settings settings;
@@ -32,23 +32,22 @@ namespace Player
         [SerializeField] private LayerMask groundMask;
         public RaycastHit2D Grounded => Physics2D.Raycast(transform.position, Vector2.down, groundDistance, groundMask);
 
-        [Header("Dependencies")]
-        public new Rigidbody2D rigidbody;
-        public Animator animator;
-        public Animations animations;
-        public PlayerInput input;
+        [field:Header("Dependencies")]
+        [field:SerializeField] public Rigidbody2D Rigidbody { get; private set; }
+        [field:SerializeField] public Animator Animator { get; private set; }
+        [field:SerializeField] public Animations Animations { get; private set; }
+        [field:SerializeField] public PlayerInput Input { get; private set; }
 
         private Quaternion _currentRotation;
-
 
         #region State Machine
 
         private StateMachine _stateMachine;
-        public IdleState idleState;
-        public RunState runState;
-        public JumpState jumpState;
-        public FallState fallState;
-        public AttackState attackState;
+        public IdleState IdleState { get; private set; }
+        public RunState RunState  { get; private set; }
+        public JumpState JumpState  { get; private set; }
+        public FallState FallState  { get; private set; }
+        public AttackState AttackState  { get; private set; }
         public PlayerState CurrentState => _stateMachine.CurrentState as PlayerState;
         public PlayerState LastState => _stateMachine.LastState as PlayerState;
         public void ChangeState(PlayerState state) => _stateMachine.ChangeState(state);
@@ -57,27 +56,24 @@ namespace Player
 
         #region Unity API
 
-        public void CrossFade(int stateHashName) => animator.CrossFade(stateHashName, 0f, 0);
+        public void CrossFade(int stateHashName) => Animator.CrossFade(stateHashName, 0f, 0);
 
         private void Awake()
         {
-            animator = GetComponentInChildren<Animator>();
-            rigidbody = GetComponent<Rigidbody2D>();
+            IdleState = new IdleState(this, "Idle");
+            RunState = new RunState(this, "Run");
+            JumpState = new JumpState(this, "Jump");
+            FallState = new FallState(this, "Fall");
+            AttackState = new AttackState(this);
 
-            idleState = new IdleState(this, "Idle");
-            runState = new RunState(this, "Run");
-            jumpState = new JumpState(this, "Jump");
-            fallState = new FallState(this, "Fall");
-            attackState = new AttackState(this);
-
-            _stateMachine = new StateMachine(idleState);
+            _stateMachine = new StateMachine(IdleState);
         }
 
         private void Update()
         {
             CurrentState.Update();
-            if (input.RawAxis > 0 && (int)_currentRotation.y == 180 || input.RawAxis < 0 && (int)_currentRotation.y != 180)
-                _currentRotation.y = rigidbody.velocity.x > 0f ? 0f : 180f;
+            if (Input.RawAxis > 0 && (int)_currentRotation.y == 180 || Input.RawAxis < 0 && (int)_currentRotation.y != 180)
+                _currentRotation.y = Rigidbody.velocity.x > 0f ? 0f : 180f;
         }
 
         private void FixedUpdate()

@@ -13,16 +13,16 @@ namespace Player
 
         public AttackState(Player player) : base(player)
         {
-            player.rigidbody.drag = _initialDrag;
-            _animationDuration1 = player.animations.GetLength("Attack1");
-            _animationDuration2 = player.animations.GetLength("Attack2");
+            player.Rigidbody.drag = _initialDrag;
+            _animationDuration1 = player.Animations.GetLength("Attack1");
+            _animationDuration2 = player.Animations.GetLength("Attack2");
         }
 
         public override void Start()
         {
-            player.rigidbody.drag = player.settings.attackDrag;
+            player.Rigidbody.drag = player.settings.AttackDrag;
 
-            player.input.CleanLastInputCommand();
+            player.Input.CleanLastInputCommand();
 
             if (player.LastState == this)
             {
@@ -43,19 +43,19 @@ namespace Player
             if (Time.time < stateTime) return;
 
             PlayerState nextState;
-            if (player.input.LastInputCommand == InputCommand.Attack)
-                nextState = player.attackState;
+            if (player.Input.LastInputCommand == InputCommand.Attack)
+                nextState = player.AttackState;
             else if (player.Grounded)
-                nextState = player.input.RawAxis != 0f ? player.runState : player.idleState;
+                nextState = player.Input.RawAxis != 0f ? player.RunState : player.IdleState;
             else
-                nextState = player.fallState;
+                nextState = player.FallState;
 
             player.ChangeState(nextState);
         }
 
         public override void Exit()
         {
-            player.rigidbody.drag = _initialDrag;
+            player.Rigidbody.drag = _initialDrag;
         }
 
         public override string ToString() => nameof(AttackState);

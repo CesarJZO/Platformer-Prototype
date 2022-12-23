@@ -4979,11 +4979,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    speed: 7
+    <speed>k__BackingField: 0
     maxSpeed: 9
     jumpForce: 35
     jumpAirControl: 0.4
-    fallAirControl: 0.6
+    fallAirControl: 0.8
     attackDrag: 3
   showStats: 1
   fontSize: 12
@@ -4994,9 +4994,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   rigidbody: {fileID: 1069792818}
-  animator: {fileID: 1754451272}
-  animations: {fileID: 11400000, guid: a7f5c77261278ce4c86d5b444c3f9322, type: 2}
-  input: {fileID: 1102648761}
+  animator: {fileID: 0}
+  animations: {fileID: 0}
+  input: {fileID: 0}
 --- !u!4 &1069792820
 Transform:
   m_ObjectHideFlags: 0
@@ -5208,8 +5208,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 348adeb356ce42ee906c26c74c5805c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cleanInputTime: 0.2
-  deadZone: 0.01
+  cleanInputTime: 1
+  deadZone: 0
   smoothTime: 0.02
 --- !u!1 &1243026124
 GameObject:
