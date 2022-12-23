@@ -14,22 +14,22 @@ namespace Player
 
         public override void Update()
         {
-            if (Mathf.Abs(player.input.SmoothAxis) < player.input.deadZone)
+            if (Mathf.Abs(player.Input.SmoothAxis) < player.Input.DeadZone)
                 player.ChangeState(player.idleState);
         }
 
         public override void FixedUpdate()
         {
-            player.rigidbody.velocity = player.input.SmoothAxis * player.settings.speed * Vector2.right;
+            player.Rigidbody.velocity = player.Input.SmoothAxis * player.settings.Speed * Vector2.right;
             if (!player.Grounded)
                 player.ChangeState(player.fallState);
         }
 
         public override void LateUpdate()
         {
-            var absXInput = Mathf.Abs(player.input.SmoothAxis);
+            var absXInput = Mathf.Abs(player.Input.SmoothAxis);
             if (absXInput > 0f)
-                player.animator.speed = absXInput;
+                player.Animator.speed = absXInput;
         }
 
         public override void ReadInput(InputAction.CallbackContext context, InputCommand command)
@@ -44,7 +44,7 @@ namespace Player
 
         public override void Exit()
         {
-            player.animator.speed = 1f;
+            player.Animator.speed = 1f;
         }
 
         public override string ToString() => nameof(RunState);

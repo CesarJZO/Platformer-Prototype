@@ -11,12 +11,12 @@ namespace Player
         [Serializable]
         public class Settings
         {
-            public float speed;
-            public float maxSpeed;
-            public float jumpForce;
-            [Range(0f, 1f)] public float jumpAirControl;
-            [Range(0f, 1f)] public float fallAirControl;
-            public float attackDrag;
+            [field:SerializeField] public float Speed { get; private set; }
+            [field:SerializeField] public float MaxSpeed { get; private set; }
+            [field:SerializeField] public float JumpForce { get; private set; }
+            [field:SerializeField, Range(0f, 1f)] public float JumpAirControl { get; private set; }
+            [field:SerializeField, Range(0f, 1f)] public float FallAirControl { get; private set; }
+            [field:SerializeField] public float AttackDrag { get; private set; }
         }
 
         public Settings settings;
@@ -27,16 +27,16 @@ namespace Player
         [SerializeField] private Vector2 textPosition;
 
         [Header("Physics")]
-        [HideInInspector] public float previousSpeed;
-        [SerializeField] private float groundDistance;
+        [HideInInspector] public float previousSpeed; // todo: move this to PlayerState
+        [SerializeField] public float groundDistance;
         [SerializeField] private LayerMask groundMask;
         public RaycastHit2D Grounded => Physics2D.Raycast(transform.position, Vector2.down, groundDistance, groundMask);
 
-        [Header("Dependencies")]
-        public new Rigidbody2D rigidbody;
-        public Animator animator;
-        public Animations animations;
-        public PlayerInput input;
+        [field: Header("Dependencies")]
+        [field:SerializeField] public Rigidbody2D Rigidbody { get; private set; }
+        [field: SerializeField] public Animator Animator { get; private set; }
+        [field: SerializeField] public Animations Animations { get; private set; }
+        [field: SerializeField] public PlayerInput Input { get; private set; }
 
         private Quaternion _currentRotation;
 
@@ -57,12 +57,12 @@ namespace Player
 
         #region Unity API
 
-        public void CrossFade(int stateHashName) => animator.CrossFade(stateHashName, 0f, 0);
+        public void CrossFade(int stateHashName) => Animator.CrossFade(stateHashName, 0f, 0);
 
         private void Awake()
         {
-            animator = GetComponentInChildren<Animator>();
-            rigidbody = GetComponent<Rigidbody2D>();
+            Animator = GetComponentInChildren<Animator>();
+            Rigidbody = GetComponent<Rigidbody2D>();
 
             idleState = new IdleState(this, "Idle");
             runState = new RunState(this, "Run");
@@ -76,8 +76,8 @@ namespace Player
         private void Update()
         {
             CurrentState.Update();
-            if (input.RawAxis > 0 && (int)_currentRotation.y == 180 || input.RawAxis < 0 && (int)_currentRotation.y != 180)
-                _currentRotation.y = rigidbody.velocity.x > 0f ? 0f : 180f;
+            if (Input.RawAxis > 0 && (int)_currentRotation.y == 180 || Input.RawAxis < 0 && (int)_currentRotation.y != 180)
+                _currentRotation.y = Rigidbody.velocity.x > 0f ? 0f : 180f;
         }
 
         private void FixedUpdate()

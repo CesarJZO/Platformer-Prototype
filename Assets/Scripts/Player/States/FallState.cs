@@ -16,19 +16,19 @@ namespace Player
         {
             if (player.Grounded)
             {
-                if (Mathf.Abs(player.rigidbody.velocity.x) > player.input.deadZone)
+                if (Mathf.Abs(player.Rigidbody.velocity.x) > player.Input.DeadZone)
                     player.ChangeState(player.runState);
                 else
                     player.ChangeState(player.idleState);
                 return;
             }
 
-            var velocity = player.rigidbody.velocity;
+            var velocity = player.Rigidbody.velocity;
             var newVelocity = new Vector2(
-                player.previousSpeed + player.input.SmoothAxis * player.settings.speed * player.settings.fallAirControl,
+                player.previousSpeed + player.Input.SmoothAxis * player.settings.Speed * player.settings.FallAirControl,
                 velocity.y
             );
-            newVelocity.x = Mathf.Clamp(newVelocity.x, -player.settings.maxSpeed, player.settings.maxSpeed);
+            newVelocity.x = Mathf.Clamp(newVelocity.x, -player.settings.MaxSpeed, player.settings.MaxSpeed);
         }
 
         public override void ReadInput(InputAction.CallbackContext context, InputCommand command)
@@ -39,7 +39,7 @@ namespace Player
 
         public override void Exit()
         {
-            player.rigidbody.velocity = player.input.RawAxis * Vector2.right;
+            player.Rigidbody.velocity = player.Input.RawAxis * Vector2.right;
         }
 
         public override string ToString() => nameof(FallState);

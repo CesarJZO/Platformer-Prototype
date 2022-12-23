@@ -11,7 +11,7 @@ namespace Player
         protected PlayerState(Player player, string animationName) : base(animationName)
         {
             this.player = player;
-            AnimationDuration = player.animations.GetLength(animationName);
+            AnimationDuration = player.Animations.GetLength(animationName);
         }
 
         public override void Start()

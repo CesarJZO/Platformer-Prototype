@@ -8,18 +8,18 @@ namespace Player
 
         public AttackState(Player player) : base(player)
         {
-            player.rigidbody.drag = _initialDrag;
+            player.Rigidbody.drag = _initialDrag;
         }
 
         public AttackState(Player player, string animationName) : base(player, animationName)
         {
-            player.rigidbody.drag = _initialDrag;
+            player.Rigidbody.drag = _initialDrag;
         }
 
         public override void Start()
         {
             base.Start();
-            player.rigidbody.drag = player.settings.attackDrag;
+            player.Rigidbody.drag = player.settings.AttackDrag;
             stateTime = AnimationDuration + Time.time;
         }
 
@@ -28,7 +28,7 @@ namespace Player
             if (Time.time < stateTime) return;
 
             PlayerState nextState = player.Grounded
-                ? player.input.RawAxis != 0f ? player.runState : player.idleState
+                ? player.Input.RawAxis != 0f ? player.runState : player.idleState
                 : player.fallState;
 
             player.ChangeState(nextState);
@@ -36,7 +36,7 @@ namespace Player
 
         public override void Exit()
         {
-            player.rigidbody.drag = _initialDrag;
+            player.Rigidbody.drag = _initialDrag;
         }
 
         public override string ToString() => nameof(AttackState);

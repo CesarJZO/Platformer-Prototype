@@ -6,8 +6,9 @@ namespace Player
 {
     public class PlayerInput : MonoBehaviour
     {
-        public float deadZone;
+        [field: SerializeField] public float DeadZone { get; private set; }
         [SerializeField] private float smoothTime;
+
         public float RawAxis { get; private set; }
         public float SmoothAxis { get; private set; }
 
@@ -33,7 +34,7 @@ namespace Player
         {
             RawAxis = _actions.Ground.Move.ReadValue<float>();
             SmoothAxis = Mathf.SmoothDamp(SmoothAxis, RawAxis, ref _velocity, smoothTime);
-            if (Mathf.Abs(SmoothAxis) <= deadZone) SmoothAxis = 0f;
+            if (Mathf.Abs(SmoothAxis) <= DeadZone) SmoothAxis = 0f;
         }
 
         private void OnAttackPerformed(InputAction.CallbackContext obj)
@@ -44,7 +45,7 @@ namespace Player
         private void OnJumpPerformed(InputAction.CallbackContext obj)
         {
             if (!_player.Grounded) return;
-            _player.previousSpeed = _player.rigidbody.velocity.x;
+            _player.previousSpeed = _player.Rigidbody.velocity.x;
             _player.CurrentState.ReadInput(obj, InputCommand.Jump);
         }
 

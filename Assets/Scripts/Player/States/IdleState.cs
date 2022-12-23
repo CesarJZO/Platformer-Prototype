@@ -16,12 +16,12 @@ namespace Player
         {
             base.Start();
             player.previousSpeed = 0f;
-            player.rigidbody.velocity = Vector2.zero;
+            player.Rigidbody.velocity = Vector2.zero;
         }
 
         public override void Update()
         {
-            if (Mathf.Abs(player.input.SmoothAxis) > player.input.deadZone)
+            if (Mathf.Abs(player.Input.SmoothAxis) > player.Input.DeadZone)
                 player.ChangeState(player.runState);
         }
 

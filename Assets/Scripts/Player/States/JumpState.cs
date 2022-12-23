@@ -15,18 +15,18 @@ namespace Player
         public override void Start()
         {
             base.Start();
-            player.rigidbody.AddForce(Vector2.up * player.settings.jumpForce, ForceMode2D.Impulse);
+            player.Rigidbody.AddForce(Vector2.up * player.settings.JumpForce, ForceMode2D.Impulse);
         }
 
         public override void FixedUpdate()
         {
-            var verticalVelocity = player.rigidbody.velocity.y;
+            var verticalVelocity = player.Rigidbody.velocity.y;
             var newVelocity = new Vector2(
-                player.previousSpeed + player.input.SmoothAxis * player.settings.speed * player.settings.jumpAirControl,
+                player.previousSpeed + player.Input.SmoothAxis * player.settings.Speed * player.settings.JumpAirControl,
                 verticalVelocity
             );
-            newVelocity.x = Mathf.Clamp(newVelocity.x, -player.settings.maxSpeed, player.settings.maxSpeed);
-            player.rigidbody.velocity = newVelocity;
+            newVelocity.x = Mathf.Clamp(newVelocity.x, -player.settings.MaxSpeed, player.settings.MaxSpeed);
+            player.Rigidbody.velocity = newVelocity;
 
             if (verticalVelocity < 0f)
                 player.ChangeState(player.fallState);

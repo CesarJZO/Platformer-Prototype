@@ -4979,12 +4979,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    speed: 7
-    maxSpeed: 9
-    jumpForce: 35
-    jumpAirControl: 0.4
-    fallAirControl: 0.6
-    attackDrag: 3
+    <Speed>k__BackingField: 0
+    <MaxSpeed>k__BackingField: 0
+    <JumpForce>k__BackingField: 0
+    <JumpAirControl>k__BackingField: 0
+    <FallAirControl>k__BackingField: 0
+    <AttackDrag>k__BackingField: 0
   showStats: 1
   fontSize: 12
   textPosition: {x: 16, y: 16}
@@ -4993,10 +4993,10 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 512
-  rigidbody: {fileID: 1069792818}
-  animator: {fileID: 1754451272}
-  animations: {fileID: 11400000, guid: a7f5c77261278ce4c86d5b444c3f9322, type: 2}
-  input: {fileID: 1102648761}
+  <Rigidbody>k__BackingField: {fileID: 0}
+  <Animator>k__BackingField: {fileID: 0}
+  <Animations>k__BackingField: {fileID: 0}
+  <Input>k__BackingField: {fileID: 0}
 --- !u!4 &1069792820
 Transform:
   m_ObjectHideFlags: 0
@@ -5208,7 +5208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 348adeb356ce42ee906c26c74c5805c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deadZone: 0.01
+  <DeadZone>k__BackingField: 0.01
   smoothTime: 0.02
 --- !u!1 &1243026124
 GameObject:
